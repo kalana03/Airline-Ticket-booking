@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+*{
+    width: calc(100dvw-env(scrollbar-width));
+}
