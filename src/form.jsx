@@ -3,10 +3,10 @@ import { MapPin, Calendar, Search } from 'lucide-react';
 
 function FlightSearchForm() {
   return (
-    <div className="w-full flex justify-center mb-[5%] px-4">
-      <form className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-6xl">
+    <div className="w-full flex justify-center mb-[0%] ">
+      <form className="bg-white shadow-lg srounded-2xl p-6 w-full w-full flex justify-center">
 
-        <div className="flex flex-col md:flex-row gap-6 items-end">
+        <div className="flex flex-col md:flex-row gap-6 items-end max-w-6xl">
 
           {/* From */}
           <div className="flex-1">

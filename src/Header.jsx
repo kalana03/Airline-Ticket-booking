@@ -4,7 +4,7 @@ import './App.css'
 
 function Header() {
   return (
-    <header className="bg-white text-primary-content shadow-md fixed top-0 left-0 w-full z-10">
+    <header className="bg-white text-primary-content  fixed top-0 left-0 w-full z-10">
       <div className=" mx-8 my-4 flex justify-between items-center px-2">
         {/* Logo */}
         <div className="flex items-center space-x-4">
