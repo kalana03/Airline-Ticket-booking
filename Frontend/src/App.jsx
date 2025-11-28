@@ -1,6 +1,6 @@
 import React from "react";
 import heroImg from "./assets/Images/hero.webp"; // adjust path to your image
-import FlightSearchForm from "./form.jsx";
+import FlightSearchForm from "./components/form.jsx";
 
 function App() {
   return (

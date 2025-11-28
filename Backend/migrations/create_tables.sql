@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS aircrafts (
-    aircraft_id SERIAL PRIMARY KEY,
+    aircraft_id VARCHAR(10) PRIMARY KEY,
     model VARCHAR(50) NOT NULL,
     manufacturer VARCHAR(50) NOT NULL,
     seating_capacity INT NOT NULL,
@@ -9,10 +9,8 @@ CREATE TABLE IF NOT EXISTS aircrafts (
 
 CREATE TABLE IF NOT EXISTS flights (
     flight_id SERIAL PRIMARY KEY,
-    flight_number VARCHAR(10) NOT NULL,
-    aircraft_id INT REFERENCES aircrafts(aircraft_id),
-    departure VARCHAR(100) NOT NULL,
-    destination VARCHAR(100) NOT NULL,
+    route_id VARCHAR(10) NOT NULL,
+    aircraft_id VARCHAR(10) REFERENCES aircrafts(aircraft_id),
     departure_date DATE NOT NULL,
     departure_time TIMESTAMP NOT NULL,
     economy_class_price DECIMAL(10, 2) NOT NULL,
@@ -53,3 +51,19 @@ CREATE TABLE IF NOT EXISTS tickets (
     issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+
+CREATE TABLE IF NOT EXISTS routes (
+    route_id SERIAL PRIMARY KEY,
+    route_type VARCHAR(20) NOT NULL,
+    departure VARCHAR(10) NOT NULL,
+    destination VARCHAR(10) NOT NULL,
+    distance_km INT NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS airports (
+    airport_code VARCHAR(10) PRIMARY KEY,
+    airport_name VARCHAR(200) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL
+);
