@@ -1,6 +1,7 @@
 import React from "react";
 import heroImg from "./assets/Images/hero.webp"; // adjust path to your image
 import FlightSearchForm from "./components/form.jsx";
+import Flights from "./components/Flights.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         </div>
         <FlightSearchForm />
       </div>
+      <Flights />
     </div>
   );
 }

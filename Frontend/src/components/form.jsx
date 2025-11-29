@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MapPin, Calendar, Search } from "lucide-react";
-import "./styles/buttons.css";
+import "../styles/buttons.css";
 
 function FlightSearchForm() {
   const [from, setFrom] = useState("");
