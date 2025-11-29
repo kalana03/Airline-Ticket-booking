@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { MapPin, Calendar, Search } from "lucide-react";
+import "./styles/buttons.css";
 
 function FlightSearchForm() {
   const [from, setFrom] = useState("");
@@ -161,7 +162,7 @@ function FlightSearchForm() {
           <button
             onClick={handleSubmit}
             type="submit"
-            className="flex items-center justify-center gap-4 h-12 px-10 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition"
+            className="primary-btn"
           >
             <Search className="w-4 h-4" />
             Search
