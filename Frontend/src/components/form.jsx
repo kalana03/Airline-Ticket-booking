@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { MapPin, Calendar, Search } from "lucide-react";
 import "../styles/buttons.css";
+import { useNavigate } from "react-router-dom";
 
 function FlightSearchForm() {
   const [from, setFrom] = useState("");
@@ -15,19 +16,22 @@ function FlightSearchForm() {
   const [filteredFromAirports, setFilteredFromAirports] = useState([]);
   const [filteredToAirports, setFilteredToAirports] = useState([]);
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission logic here
     console.log("Searching flights from", from, "to", to, "on", date);
 
-    fetch("http://localhost:5000/searchFlights", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ from, to, date })
-  })
-    .then((res) => res.json())
-    .then((data) => setSearchResults(data))
-    .catch((err) => console.log("Error searching flights:", err));
+    const response = await fetch("http://localhost:5000/searchFlights", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ from, to, date })
+    });
+    const flights = await response.json();
+    const navigate = useNavigate();
+
+    navigate ("/flights", {state:flights});
+
+ 
   }
   
   // Load airports once from backend
@@ -56,7 +60,7 @@ function FlightSearchForm() {
 
   return (
     <div className="w-auto flex justify-center mb-[5%]">
-      <form className="bg-white p-10 w-auto flex justify-center rounded-xl shadow-lg">
+      <form onSubmit={handleSubmit} className="bg-white p-10 w-auto flex justify-center rounded-xl shadow-lg">
         <div className="flex flex-col md:flex-row gap-10 items-end max-w-6xl">
 
           {/* From */}

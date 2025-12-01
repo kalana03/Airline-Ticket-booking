@@ -23,42 +23,54 @@ app.get("/airports", async (req, res) => {
 
 app.post("/searchFlights", async (req, res) => {
     const { from, to, date } = req.body;
-    console.log("Requested flights from", from, "to", to, "on", date);
 
-    var q = "SELECT r.departure, r.destination, f.departure_date, f.departure_time";
-    q += " FROM flights f, routes r JOIN airports a1 ON a1.airport_code = r.departure JOIN airports a2 ON a2.airport_code = r.destination";
-    q += " WHERE f.route_id = r.route_id AND f.departure_date >= CURRENT_DATE";
+    var q = `
+        SELECT *
+        FROM routes r
+        JOIN flights f ON r.route_id = f.route_id
+        
+    `;
+    var values = [];
+    var count = 1;
 
-    let params =[];
-    let count = 1;
-
-    if (from != null && from !== "") {
+    if (from) {
         q += ` AND r.departure = $${count}`;
-        params.push(from);
+        values.push(from);
         count++;
-
     }
-    if (to != null && to !== "") {
+
+    if (to) {
         q += ` AND r.destination = $${count}`;
-        params.push(to);
-        count++;
-    }
-    if (date != null && date !== "") {
-        q += ` AND f.departure_date = $${count}`;
-        params.push(date);
+        values.push(to);
         count++;
     }
 
-    q += " ORDER BY f.departure_date, f.departure_time";
+    if (date) {
+        q += ` AND f.departure_date = $${count}`;
+        values.push(date);
+        count++;
+    }   
+
+    q += ` ORDER BY f.departure_date, f.departure_time ASC`;
+
+    console.log("FINAL SQL:", q);
+    console.log("VALUES:", values);
+
 
     try {
-        const flights = await pool.query(q, params);
-        res.json(flights.rows);
+        console.log("QUERY PARAMS:", from, to);
+        const result = await pool.query(q, values);
+        console.log("DB RESULT:", result.rows);
+        res.json(result.rows);
+
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send("Server error");
+        console.error("DB ERROR:", err.message);
+        console.error(err);
+        res.status(500).json({ error: err.message });
     }
+
 });
+
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
