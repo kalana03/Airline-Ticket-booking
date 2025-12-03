@@ -16,6 +16,9 @@ function FlightSearchForm() {
   const [filteredFromAirports, setFilteredFromAirports] = useState([]);
   const [filteredToAirports, setFilteredToAirports] = useState([]);
 
+  const navigate = useNavigate();
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission logic here
@@ -27,8 +30,7 @@ function FlightSearchForm() {
       body: JSON.stringify({ from, to, date })
     });
     const flights = await response.json();
-    const navigate = useNavigate();
-
+    
     navigate ("/flights", {state:flights});
 
  
@@ -59,8 +61,8 @@ function FlightSearchForm() {
   }, [from, airports]);
 
   return (
-    <div className="w-auto flex justify-center mb-[5%]">
-      <form onSubmit={handleSubmit} className="bg-white p-10 w-auto flex justify-center rounded-xl shadow-lg">
+    <div className="w-auto flex justify-center">
+      <form onSubmit={handleSubmit} className="bg-white p-10 w-auto flex justify-center rounded-xl">
         <div className="flex flex-col md:flex-row gap-10 items-end max-w-6xl">
 
           {/* From */}
@@ -94,7 +96,7 @@ function FlightSearchForm() {
                     key={a.airport_code}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {
-                      setFrom(`${a.city} (${a.airport_code})`);
+                      setFrom(`${a.airport_code}`);
                       setShowFromDropdown(false);
                     }}
                   >
@@ -136,7 +138,7 @@ function FlightSearchForm() {
                     key={a.airport_code}
                     className="px-4 py-2 cursor-pointer hover:bg-gray-100"
                     onClick={() => {
-                      setTo(`${a.city} (${a.airport_code})`);
+                      setTo(`${a.airport_code}`);
                       setShowToDropdown(false);
                     }}
                   >

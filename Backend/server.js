@@ -22,53 +22,51 @@ app.get("/airports", async (req, res) => {
 })
 
 app.post("/searchFlights", async (req, res) => {
-    const { from, to, date } = req.body;
+  const { from, to, date } = req.body;
 
-    var q = `
-        SELECT *
-        FROM routes r
-        JOIN flights f ON r.route_id = f.route_id
-        
-    `;
-    var values = [];
-    var count = 1;
+  let q = `
+    SELECT r.departure, r.destination, a1.airport_name AS dep_airport, a2.airport_name AS dest_airport, f.departure_date, f.departure_time, f.aircraft_id
+    FROM routes r
+    JOIN flights f ON r.route_id = f.route_id
+    JOIN airports a1 ON r.departure = a1.airport_code
+    JOIN airports a2 ON r.destination = a2.airport_code
+    WHERE 1=1
+  `;
 
-    if (from) {
-        q += ` AND r.departure = $${count}`;
-        values.push(from);
-        count++;
-    }
+  const values = [];
+  let count = 1;
 
-    if (to) {
-        q += ` AND r.destination = $${count}`;
-        values.push(to);
-        count++;
-    }
+  if (from) {
+    q += ` AND r.departure = $${count}`;
+    values.push(from);
+    count++;
+  }
 
-    if (date) {
-        q += ` AND f.departure_date = $${count}`;
-        values.push(date);
-        count++;
-    }   
+  if (to) {
+    q += ` AND r.destination = $${count}`;
+    values.push(to);
+    count++;
+  }
 
-    q += ` ORDER BY f.departure_date, f.departure_time ASC`;
+  if (date) {
+    q += ` AND f.departure_date = $${count}`;
+    values.push(date);
+    count++;
+  }
 
-    console.log("FINAL SQL:", q);
-    console.log("VALUES:", values);
+  q += ` ORDER BY f.departure_date, f.departure_time ASC`;
 
+  console.log("FINAL SQL:", q);
+  console.log("VALUES:", values);
 
-    try {
-        console.log("QUERY PARAMS:", from, to);
-        const result = await pool.query(q, values);
-        console.log("DB RESULT:", result.rows);
-        res.json(result.rows);
-
-    } catch (err) {
-        console.error("DB ERROR:", err.message);
-        console.error(err);
-        res.status(500).json({ error: err.message });
-    }
-
+  try {
+    const result = await pool.query(q, values);
+    console.log("DB RESULT:", result.rows);
+    res.json(result.rows);
+  } catch (err) {
+    console.error("DB ERROR:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 

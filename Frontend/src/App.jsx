@@ -2,10 +2,12 @@ import React from "react";
 import heroImg from "./assets/Images/hero.webp"; // adjust path to your image
 import FlightSearchForm from "./components/form.jsx";
 import Flights from "./components/Flights.jsx";
+import Header from "./components/Header.jsx";
 
 function App() {
   return (
     <div className="w-full h-screen relative">
+      <Header />
       {/* Hero section */}
       <div
         className="w-full h-full bg-center bg-cover  flex flex-col items-center justify-between"
@@ -19,9 +21,12 @@ function App() {
             Book your flights easily and conveniently with Delta Airlines.
           </p>
         </div>
-        <FlightSearchForm />
+        <div className = "mb-[5%]">
+          <FlightSearchForm />
+        </div>
+        
       </div>
-      <Flights />
+      
     </div>
   );
 }
