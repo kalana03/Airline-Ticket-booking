@@ -25,7 +25,7 @@ app.post("/searchFlights", async (req, res) => {
   const { from, to, date } = req.body;
 
   let q = `
-    SELECT r.departure, r.destination, a1.airport_name AS dep_airport, a2.airport_name AS dest_airport, f.departure_date, f.departure_time, f.aircraft_id
+    SELECT f.flight_id, r.departure, r.destination, a1.airport_name AS dep_airport, a2.airport_name AS dest_airport, f.departure_date, f.departure_time, f.aircraft_id
     FROM routes r
     JOIN flights f ON r.route_id = f.route_id
     JOIN airports a1 ON r.departure = a1.airport_code

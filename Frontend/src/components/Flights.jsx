@@ -1,8 +1,16 @@
 import React from "react";
 import { MapPin, Calendar, Clock, Plane } from "lucide-react";
 import "../styles/buttons.css";
+import {useNavigate} from 'react-router-dom'
 
 export default function FlightCard({flight}) {
+
+  const navigate = useNavigate();
+  function bookFlight(flight_id){
+    console.log(flight_id);
+    navigate(`/booking?flightID=${flight_id}`);
+
+  };
   
   
   return (
@@ -61,7 +69,7 @@ export default function FlightCard({flight}) {
       </div>
 
       {/* Book Button */}
-      <button className="accent-btn">
+      <button onClick={() => bookFlight(flight.flight_id)} className="accent-btn">
         Book Flight
       </button>
 
