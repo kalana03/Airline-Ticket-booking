@@ -2,24 +2,22 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 1rem;              /* gap-4 */
-  height: 3rem;           /* h-12 */
-  padding-left: 2.5rem;   /* px-10 */
+  gap: 1rem;
+  height: 3rem;
+  padding-left: 2.5rem;
   padding-right: 2.5rem;
-  background-color: #000; /* bg-black */
-  color: #fff;            /* text-white */
+  background-color: #000;
+  color: #fff;
+  border: 2px solid transparent; /* correct syntax */
   border-radius: 0.5rem;
-  border-color: transparent;  /* rounded-lg */
-  font-weight: 600;       /* font-semibold */
-  transition: background-color 0.2s ease; /* transition */
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease; /* add border transition */
 }
 
 .primary-btn:hover {
-  background-color: #777777; /* hover:bg-gray-800 */
-  border-color: 
-  #ffffff; /* hover:border-gray-800 */
-  color: #ffffff;
-
+  background-color: transparent;
+  border-color: #000;  /* correct way to set border on hover */
+  color: #000;
 }
 
 
@@ -28,7 +26,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;              /* gap-4 */
-  height: 3rem;           /* h-12 */
+  padding: 12px;          /* h-12 */
   width: 175px;
   background-color: #1e3a8a;
   opacity: 0.9;

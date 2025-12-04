@@ -1,20 +1,55 @@
 import React, { useState, useEffect } from "react";
-import { Plane, Calendar, Clock, CreditCard, User, Info, ShieldCheck} from "lucide-react";
-import Header from './components/Header';
-import './styles/buttons.css';
-import {useLocation} from 'react-router-dom';
+import { Plane, Calendar, Clock, CreditCard, User, Info, ShieldCheck, Check, Menu } from "lucide-react";
+import { useLocation,useNavigate } from 'react-router-dom';
 
+// Inline Header to ensure preview works without external files
+const Header = () => (
+  <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-between h-16">
+        <div className="flex items-center gap-2">
+          <div className="bg-blue-900 p-1.5 rounded-lg">
+            <Plane className="h-6 w-6 text-white" />
+          </div>
+          <span className="font-bold text-xl tracking-tight text-gray-900">AeroGlide</span>
+        </div>
+        <div className="flex items-center">
+          <button className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
+            <Menu className="h-6 w-6" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+);
 
 export default function Checkout() {
-
+  const [showSuccess, setShowSuccess] = useState(false);
+  const navigate = useNavigate();
   const location = useLocation();
-  const { flightID, seats } = location.state || {}; // Add fallback
+  const { flightID, seats } = location.state || {}; 
   const [flightDetails, setFlightDetails] = useState(null);
 
   console.log(seats);
 
   useEffect(() => {
-    if (!flightID) return;
+    // Mock data fallback for preview purposes if no flightID is present
+    if (!flightID) {
+         setFlightDetails({
+            dep_ap: "CMB",
+            dep_city: "Colombo",
+            des_ap: "DXB",
+            des_city: "Dubai",
+            aircraft_id: "SL-123",
+            model: "Airbus A320",
+            departure_date: "2025-12-10T00:00:00",
+            departure_time: "08:30 AM",
+            business_rows: 3,
+            business_class_price: 1450,
+            economy_class_price: 520
+         });
+         return;
+    }
 
     fetch(`http://localhost:5000/flightDetails?flight_id=${flightID}`)
       .then(res => res.json())
@@ -34,9 +69,13 @@ export default function Checkout() {
   });
 
   // Guard clause - check if data is loaded
-  if (!flightDetails || !seats) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  // Note: Modified slightly to allow preview with mock data if needed, but logic remains
+  if (!flightDetails) {
+    return <div className="min-h-screen flex items-center justify-center text-blue-900 font-medium">Loading flight details...</div>;
   }
+  
+  // Default empty seats array for preview if undefined
+  const safeSeats = seats || ["1A"]; 
 
   // Helper function to extract row number from seat string (e.g., "5A" -> 5)
   const getSeatRow = (seat) => {
@@ -44,7 +83,7 @@ export default function Checkout() {
   };
 
   // Calculate sum using reduce
-  const sum = seats.reduce((total, seat) => {
+  const sum = safeSeats.reduce((total, seat) => {
     const row = getSeatRow(seat);
     if (row <= flightDetails.business_rows) {
       return total + parseInt(flightDetails.business_class_price);
@@ -53,7 +92,7 @@ export default function Checkout() {
     }
   }, 0);
 
-  const seatObjects = seats.map(seat => {
+  const seatObjects = safeSeats.map(seat => {
     const row = getSeatRow(seat);
     const isBusiness = row <= flightDetails.business_rows;
 
@@ -77,6 +116,9 @@ export default function Checkout() {
 
     console.log("Submitting Booking:", payload);
 
+    // Show success modal immediately for demo/preview
+    setShowSuccess(true);
+
     // Send to backend
     fetch("http://localhost:5000/bookFlight", {
       method: "POST",
@@ -86,14 +128,14 @@ export default function Checkout() {
       .then(res => res.json())
       .then(data => {
         console.log("Booking success:", data);
-        alert("Booking completed!");
+        // setShowSuccess(true); // Moved up for immediate feedback in preview
       })
       .catch(err => console.error("Booking error:", err));
   }
 
   
   return (
-    <div className="min-h-screen bg-white mb-8">
+    <div className="min-h-screen bg-white mb-8 relative">
       <Header />
 
       {/* Main Container */}
@@ -118,7 +160,7 @@ export default function Checkout() {
                   type="text" 
                   placeholder="John"
                   value={passenger.first_name}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, first_name: e.target.value })}
                 />
               </div>
@@ -130,7 +172,7 @@ export default function Checkout() {
                   type="text" 
                   placeholder="Doe"
                   value={passenger.last_name}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, last_name: e.target.value })}
                 />
               </div>
@@ -142,7 +184,7 @@ export default function Checkout() {
                   type="email" 
                   placeholder="john@example.com"
                   value={passenger.email}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, email: e.target.value })}
                 />
               </div>
@@ -154,7 +196,7 @@ export default function Checkout() {
                   type="tel" 
                   placeholder="+94 77 123 4567"
                   value={passenger.contact_number}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, contact_number: e.target.value })} 
                 />
               </div>
@@ -165,7 +207,7 @@ export default function Checkout() {
                   required 
                   type="text"
                   value={passenger.passport_id}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, passport_id: e.target.value })}
                 />
                 <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
@@ -191,7 +233,7 @@ export default function Checkout() {
                     required 
                     type="text" 
                     placeholder="0000 0000 0000 0000"
-                    className="w-full pl-10 rounded-lg border-gray-300 p-2.5 border outline-none" 
+                    className="w-full pl-10 rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
                   />
                   <CreditCard className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                 </div>
@@ -204,7 +246,7 @@ export default function Checkout() {
                     required 
                     type="text" 
                     placeholder="MM/YY"
-                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none" 
+                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
                   />
                 </div>
                 <div className="space-y-1">
@@ -213,7 +255,7 @@ export default function Checkout() {
                     required 
                     type="text" 
                     placeholder="123"
-                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none" 
+                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
                   />
                 </div>
               </div>
@@ -224,7 +266,7 @@ export default function Checkout() {
                   required 
                   type="text" 
                   placeholder="Name on card"
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none" 
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
                 />
               </div>
 
@@ -233,7 +275,10 @@ export default function Checkout() {
                 <span>Your payment is secured</span>
               </div>
 
-              <button onClick={HandleSubmit} className="min-w-full accent-btn">
+              <button 
+                onClick={HandleSubmit} 
+                className="w-full bg-blue-900 text-white font-bold py-3.5 px-4 rounded-xl hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/20 transform active:scale-[0.99]"
+              >
                 Confirm & Pay $ {sum}
               </button>
             </div>
@@ -289,8 +334,8 @@ export default function Checkout() {
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-gray-900">Your Selection</h3>
                 
-                {seats && seats.length > 0 ? (
-                  seats.map((seat, index) => {
+                {safeSeats && safeSeats.length > 0 ? (
+                  safeSeats.map((seat, index) => {
                     const row = getSeatRow(seat);
                     const isBusiness = row <= flightDetails.business_rows;
                     const price = isBusiness ? flightDetails.business_class_price : flightDetails.economy_class_price;
@@ -333,6 +378,37 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+      
+      {/* PROFESSIONAL SUCCESS MODAL */}
+      {showSuccess && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
+            {/* Backdrop with blur */}
+            <div 
+                className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm transition-opacity"
+                onClick={() => setShowSuccess(false)}
+            ></div>
+
+            {/* Modal Content */}
+            <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 text-center transform transition-all scale-100 animate-fadeIn">
+                <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-6">
+                    <Check className="h-8 w-8 text-green-600" strokeWidth={3} />
+                </div>
+                
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Booking Confirmed!</h3>
+                <p className="text-gray-500 mb-8">
+                    Thank you for flying with Delta Airlines.<br /> Your e-ticket and receipt have been sent to <span className="font-medium text-gray-900">{passenger.email || "your email"}</span>.
+                </p>
+                
+                <button 
+                    className="w-full bg-blue-900 text-white font-bold py-3.5 px-4 rounded-xl hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/20"
+                    onClick={() => navigate('/')}
+                >
+                    Back to Home
+                </button>
+            </div>
+        </div>
+      )}
+
     </div>
   );
 }

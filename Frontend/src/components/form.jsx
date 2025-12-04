@@ -168,7 +168,7 @@ function FlightSearchForm() {
           <button
             onClick={handleSubmit}
             type="submit"
-            className="accent-btn"
+            className="primary-btn"
           >
             <Search className="w-4 h-4" />
             Search
