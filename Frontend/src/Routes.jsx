@@ -3,7 +3,8 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import App from "./App.jsx"; // your current App with hero + FlightSearchForm
 import Flights from "./FlightsPage.jsx";
-import Booking from "./Booking.jsx"
+import Booking from "./Booking.jsx";
+
 
 export default function AppRoutes() {
   return (

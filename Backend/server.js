@@ -69,6 +69,29 @@ app.post("/searchFlights", async (req, res) => {
   }
 });
 
+app.get("/flightDetails", async (req, res) => {
+  // 1️⃣ Get the flight_id from query string
+  const { flight_id } = req.query;
+
+  try {
+    // 2️⃣ Prepare SQL query with parameter
+    const query = `
+      SELECT * 
+      FROM flights f
+      JOIN aircrafts a ON f.aircraft_id = a.aircraft_id
+      WHERE f.flight_id = $1
+    `;
+
+    // 3️⃣ Execute query with parameter
+    const result = await pool.query(query, [flight_id]);
+
+    // 4️⃣ Send JSON response
+    res.json(result.rows[0] || null); // return one row or null
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 const PORT = 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

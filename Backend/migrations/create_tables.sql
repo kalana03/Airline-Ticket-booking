@@ -1,11 +1,15 @@
-CREATE TABLE IF NOT EXISTS aircrafts (
+DROP TABLE IF EXISTS aircrafts CASCADE;
+
+CREATE TABLE aircrafts (
     aircraft_id VARCHAR(10) PRIMARY KEY,
     model VARCHAR(50) NOT NULL,
     manufacturer VARCHAR(50) NOT NULL,
-    seating_capacity INT NOT NULL,
-    economy_seats INT,
-    business_seats INT
+    economy_rows INT NOT NULL,
+    economy_layout VARCHAR(50) NOT NULL,
+    business_rows INT NOT NULL,
+    business_layout VARCHAR(50) NOT NULL
 );
+
 
 CREATE TABLE IF NOT EXISTS flights (
     flight_id SERIAL PRIMARY KEY,

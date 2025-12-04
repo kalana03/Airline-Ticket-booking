@@ -1,19 +1,20 @@
-/*INSERT INTO aircrafts (aircraft_id, model, manufacturer, seating_capacity, economy_seats, business_seats)
+INSERT INTO aircrafts (aircraft_id, model, manufacturer, economy_rows, economy_layout, business_rows, business_layout )
 VALUES
-('DL-A220', 'Airbus A220-100', 'Airbus', 109, 97, 12),
-('DL-A321', 'Airbus A321neo', 'Airbus', 194, 176, 18),
-('DL-B737', 'Boeing 737-900ER', 'Boeing', 180, 165, 15),
-('DL-B767', 'Boeing 767-300ER', 'Boeing', 211, 181, 30),
-('DL-A350', 'Airbus A350-900', 'Airbus', 306, 266, 40);
+('DL-A220', 'Airbus A220-100', 'Airbus', 20, '2-3', 6, '2-2'),
+('DL-A321', 'Airbus A321neo', 'Airbus', 29, '3-3', 5, '2-2'),
+('DL-B737', 'Boeing 737-900ER', 'Boeing', 27, '3-3', 5, '2-2'),
+('DL-B767', 'Boeing 767-300ER', 'Boeing', 26, '2-3-2', 5, '2-2-2'),
+('DL-A350', 'Airbus A350-900', 'Airbus', 30, '3-3-3', 10, '1-2-1');
+
 
 INSERT INTO routes (route_type, departure, destination, distance_km)
 VALUES
 ('International', 'Atlanta (ATL)', 'Tokyo (HND)', 10860),
 ('Domestic', 'New York (JFK)', 'Los Angeles (LAX)', 3974),
 ('Domestic', 'Seattle (SEA)', 'Salt Lake City (SLC)', 1630),
-('Domestic', 'Detroit (DTW)', 'Orlando (MCO)', 1860),
-('International', 'Atlanta (ATL)', 'Paris (CDG)', 6740);*/
-/*
+('Domestic', 'Detroit (/*  */DTW)', 'Orlando (MCO)', 1860),
+('International', 'Atlanta (ATL)', 'Paris (CDG)', 6740);
+
 INSERT INTO flights (route_id, aircraft_id, departure_date, departure_time, economy_class_price, business_class_price)
 VALUES
 (1, 'DL-A350', '2025-02-15', '10:30:00', 850.00, 3450.00),
@@ -28,7 +29,7 @@ VALUES
 ('Sophia', 'Kim', 'sophia.kim@example.com', '+1-718-555-2299'),
 ('Daniel', 'Rodriguez', 'daniel.rod@example.com', '+1-313-555-6411'),
 ('Emma', 'Parker', 'emma.parker@example.com', '+1-206-555-8820'),
-('Liam', 'Johnson', 'liam.johnson@example.com', '+1-801-555-3302');*/
+('Liam', 'Johnson', 'liam.johnson@example.com', '+1-801-555-3302');
 
 INSERT INTO airports (airport_code, airport_name, city, country)
 VALUES

@@ -41,14 +41,31 @@ const Seat = ({ seatNum, status, classType, onClick }) => {
   );
 };
 
-export default function SeatMapMultiSelect({ booked = [], onSelect }) {
+export default function SeatMapMultiSelect({det, booked = [], onSelect }) {
   const [selectedSeats, setSelectedSeats] = useState([]);
 
-  const businessRows = 6;
-  const economyRows = 32;
+  const businessRows = det.business_rows;
+  const economyRows = det.economy_rows;
+  
+  function generateSeatLetters(layout) {
+    const blocks = layout.split("-").map(Number); // [3,3,3]
+    const letters = [];
+    let charCode = "A".charCodeAt(0);
 
-  const businessLayout = ["A", "C", "", "", "D", "F"];
-  const economyLayout = ["A", "B", "", "C", "D", "E", "", "F", "G"];
+    blocks.forEach((blockSize, i) => {
+      for (let j = 0; j < blockSize; j++) {
+        letters.push(String.fromCharCode(charCode));
+        charCode++;
+      }
+      // add empty string to represent aisle between blocks, except after last block
+      if (i !== blocks.length - 1) letters.push("");
+    });
+
+    return letters;
+  }
+
+  const businessLayout = generateSeatLetters(det.business_layout);
+  const economyLayout = generateSeatLetters(det.economy_layout);
 
   const handleSeatClick = (seat) => {
     let newSelection;
@@ -68,12 +85,15 @@ export default function SeatMapMultiSelect({ booked = [], onSelect }) {
     if (selectedSeats.includes(seatNum)) return "selected";
     return "available";
   };
+  const BUSINESS_PRICE = det.business_class_price;
+  const ECONOMY_PRICE = det.economy_class_price;
 
   const calculateTotal = () => {
     return selectedSeats.reduce((total, seat) => {
       const row = parseInt(seat);
-      const price = row <= businessRows ? 1450 : 520;
-      return total + price;
+      
+      const price = row <= businessRows ? BUSINESS_PRICE : ECONOMY_PRICE;
+      return total + parseInt(price);
     }, 0);
   };
 
@@ -116,13 +136,17 @@ export default function SeatMapMultiSelect({ booked = [], onSelect }) {
     </div>
   );
 
+  function handleSeatSelect(){
+    
+  }
+
   return (
     <div className="flex xl:flex-row gap-8 mt-24 w-7xl max-h-[80vh] items-start">
       <div className="flex-1 bg-white rounded-xl border border-gray-200">
         <div className="text-center my-8">
           <h1 className="text-2xl text-gray-900">Select Your Seat</h1>
           <p className="text-gray-500 text-base font-medium mt-2">
-            Flight SK902 • Boeing 787 Dreamliner
+            {det.aircraft_id} • {det.model}
           </p>
         </div>
 
@@ -182,7 +206,7 @@ export default function SeatMapMultiSelect({ booked = [], onSelect }) {
                         </span>
                       </div>
                       <span className="text-lg text-gray-900">
-                        ${isBiz ? "1,450" : "520"}
+                        ${isBiz ? BUSINESS_PRICE : ECONOMY_PRICE}
                       </span>
                     </div>
                   );
@@ -202,11 +226,11 @@ export default function SeatMapMultiSelect({ booked = [], onSelect }) {
             <button
               disabled={selectedSeats.length === 0}
               onClick={() =>
-                alert(`Confirmed: ${selectedSeats.join(", ")}`)
+                handleSeatSelect()
               }
               className={`accent-btn min-w-full mt-8 ${
                 selectedSeats.length > 0
-                  ? "bg-emerald-600 text-white shadow-lg hover:bg-emerald-700 hover:-translate-y-1"
+                  ? "text-white"
                   : "bg-gray-200 text-gray-400 cursor-not-allowed"
               }`}
             >
