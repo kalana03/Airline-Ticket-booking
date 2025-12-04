@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS aircrafts CASCADE;
-
 CREATE TABLE aircrafts (
     aircraft_id VARCHAR(10) PRIMARY KEY,
     model VARCHAR(50) NOT NULL,
@@ -33,8 +31,17 @@ CREATE TABLE IF NOT EXISTS bookings (
     booking_id SERIAL PRIMARY KEY,
     flight_id INT REFERENCES flights(flight_id),
     passport_id INT REFERENCES passengers(passport_id),
-    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    seat_numbers VARCHAR(20) NOT NULL
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS tickets (
+    ticket_id SERIAL PRIMARY KEY,
+    booking_id INT REFERENCES bookings(booking_id),
+    flight_id INT REFERENCES flights(flight_id),
+    seat_number VARCHAR(10) NOT NULL,
+    ticket_class VARCHAR(20) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS payments (

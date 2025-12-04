@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import './styles/buttons.css'; 
 import Header from "./components/Header";
 import SeatSelect from "./components/SeatSelector";
-import {useSearchParams} from 'react-router-dom';
+import { useSearchParams } from "react-router-dom";
 
 export default function Booking(){
   const [flightDetails, setFlightDetails] = useState(null);
 
-  const[searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const flightID = searchParams.get("flightID");
 
    useEffect(() => {
@@ -29,6 +29,7 @@ export default function Booking(){
       <div className="w-full flex justify-center">
         {flightDetails && <SeatSelect det={flightDetails} /> }
       </div>
+
 
     </div>
   )

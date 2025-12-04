@@ -1,5 +1,7 @@
 import React, { useState } from "react";
+import { Plane, Calendar, Clock, CreditCard, User, Luggage, Info, ShieldCheck, Menu } from "lucide-react";
 import "../styles/buttons.css";
+import {useNavigate} from 'react-router-dom';
 
 // Seat Component
 const Seat = ({ seatNum, status, classType, onClick }) => {
@@ -18,16 +20,16 @@ const Seat = ({ seatNum, status, classType, onClick }) => {
     specificStyles = "bg-gray-100 text-gray-300 cursor-not-allowed";
   } else if (status === "selected") {
     specificStyles =
-      "bg-emerald-600 text-white transform scale-[1.03] z-10";
-    shadowStyles = "shadow-lg shadow-emerald-600/30";
+      "bg-blue-900 text-white transform scale-[1.03] z-10";
+    shadowStyles = "";
   } else if (classType === "business") {
     specificStyles =
       "bg-blue-50 text-blue-900 hover:bg-blue-100 border border-blue-200 cursor-pointer";
-    shadowStyles = "shadow-sm hover:shadow-md";
+    shadowStyles = "";
   } else {
     specificStyles =
       "bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 cursor-pointer";
-    shadowStyles = "shadow-sm hover:shadow-md";
+    shadowStyles = "";
   }
 
   return (
@@ -62,6 +64,13 @@ export default function SeatMapMultiSelect({det, booked = [], onSelect }) {
     });
 
     return letters;
+  }
+
+  const navigate = useNavigate();
+
+  function handlesubmit(flightID, seatArray) {
+    
+    navigate(`/checkout`, {state: {flightID: flightID, seats:seatArray}});
   }
 
   const businessLayout = generateSeatLetters(det.business_layout);
@@ -137,14 +146,17 @@ export default function SeatMapMultiSelect({det, booked = [], onSelect }) {
   );
 
   function handleSeatSelect(){
-    
+
   }
 
   return (
     <div className="flex xl:flex-row gap-8 mt-24 w-7xl max-h-[80vh] items-start">
       <div className="flex-1 bg-white rounded-xl border border-gray-200">
-        <div className="text-center my-8">
-          <h1 className="text-2xl text-gray-900">Select Your Seat</h1>
+        <div className="text-center mb-8">
+          <div className="px-8 mb-8 py-4 border-b border-gray-200 flex items-center gap-2">
+              <User className="w-5 h-5 text-blue-900" />
+              <h2 className="text-lg font-semibold text-gray-800">Select Your Seat</h2>
+            </div>
           <p className="text-gray-500 text-base font-medium mt-2">
             {det.aircraft_id} • {det.model}
           </p>
@@ -175,67 +187,71 @@ export default function SeatMapMultiSelect({det, booked = [], onSelect }) {
 
       {/* SIDEBAR */}
       <div className="w-full xl:w-[26rem] flex flex-col gap-6 sticky top-12">
-        <div className="bg-white p-8 rounded-xl border border-gray-200 relative overflow-hidden">
+        <div className="bg-white rounded-xl border border-gray-200 relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-gray-900 text-2xl mb-8">Your Selection</h2>
-
-            <div className="space-y-4 mb-10 min-h-[100px]">
-              {selectedSeats.length === 0 ? (
-                <p className="text-gray-400 italic text-center py-8">
-                  No seats selected
-                </p>
-              ) : (
-                selectedSeats.map((seat) => {
-                  const isBiz = parseInt(seat) <= businessRows;
-                  return (
-                    <div
-                      key={seat}
-                      className="flex justify-between items-center animate-fadeIn border-b border-gray-100 pb-2"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-3 h-3 rounded-full ${
-                            isBiz ? "bg-blue-600" : "bg-gray-400"
-                          }`}
-                        ></div>
-                        <span className="text-xl text-gray-800">
-                          {seat}
-                        </span>
-                        <span className="text-xs text-gray-500 uppercase">
-                          {isBiz ? "Business" : "Economy"}
+            <div className="px-8 mb-8 py-4 border-b border-gray-200 flex items-center gap-2">
+              <User className="w-5 h-5 text-blue-900" />
+              <h2 className="text-lg font-semibold text-gray-800">Your Selection</h2>
+            </div>
+            <div className="px-8 pb-8">
+              <div className="space-y-4 mb-10 min-h-[100px]">
+                {selectedSeats.length === 0 ? (
+                  <p className="text-gray-400 italic text-center py-8">
+                    No seats selected
+                  </p>
+                ) : (
+                  selectedSeats.map((seat) => {
+                    const isBiz = parseInt(seat) <= businessRows;
+                    return (
+                      <div
+                        key={seat}
+                        className="flex justify-between items-center animate-fadeIn border-b border-gray-100 pb-2"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div
+                            className={`w-3 h-3 rounded-full ${
+                              isBiz ? "bg-blue-600" : "bg-gray-400"
+                            }`}
+                          ></div>
+                          <span className="text-xl text-gray-800">
+                            {seat}
+                          </span>
+                          <span className="text-xs text-gray-500 uppercase">
+                            {isBiz ? "Business" : "Economy"}
+                          </span>
+                        </div>
+                        <span className="text-lg text-gray-900">
+                          ${isBiz ? BUSINESS_PRICE : ECONOMY_PRICE}
                         </span>
                       </div>
-                      <span className="text-lg text-gray-900">
-                        ${isBiz ? BUSINESS_PRICE : ECONOMY_PRICE}
-                      </span>
-                    </div>
-                  );
-                })
-              )}
-            </div>
+                    );
+                  })
+                )}
+              </div>
 
-            <div className="flex justify-between items-baseline border-t-2 border-gray-100 pt-6">
-              <span className="text-sm text-gray-500 font-bold uppercase tracking-wider">
-                Total Price
-              </span>
-              <span className="text-2xl text-gray-900">
-                ${calculateTotal().toLocaleString()}
-              </span>
-            </div>
+              <div className="flex justify-between items-baseline border-t-2 border-gray-100 pt-6">
+                <span className="text-sm text-gray-500 font-bold uppercase tracking-wider">
+                  Total Price
+                </span>
+                <span className="text-2xl text-gray-900">
+                  ${calculateTotal().toLocaleString()}
+                </span>
+              </div>
 
-            <button
-              disabled={selectedSeats.length === 0}
-              onClick={() =>
-                handleSeatSelect()
-              }
-              className={`accent-btn min-w-full mt-8 ${
-                selectedSeats.length > 0
-                  ? "text-white"
-                  : "bg-gray-200 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              Confirm Selection ({selectedSeats.length})
-            </button>
+              <button
+                disabled={selectedSeats.length === 0}
+                onClick={() =>
+                  handlesubmit(det.flight_id, selectedSeats)
+                }
+                className={`accent-btn min-w-full mt-8 ${
+                  selectedSeats.length > 0
+                    ? "text-white"
+                    : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                }`}
+              >
+                Confirm Selection ({selectedSeats.length})
+              </button>
+              </div>
           </div>
         </div>
       </div>

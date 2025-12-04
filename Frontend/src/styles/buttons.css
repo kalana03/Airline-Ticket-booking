@@ -30,16 +30,16 @@
   gap: 1rem;              /* gap-4 */
   height: 3rem;           /* h-12 */
   width: 175px;
-  background-color: #ffffff; /* bg-black */
-  color: #0b0136;            /* text-white */
+  background-color: #1e3a8a;
+  opacity: 0.9;
+  color: #ffffff;            /* text-white */
   border-radius: 0.5rem;
-  border-color: #0b0136;  /* rounded-lg */
   font-weight: 600;
   border-width: 2px;       /* font-semibold */
-  transition: background-color 0.2s ease; /* transition */
+  transition: background-color 0.3s ease; /* transition */
 }
 
 .accent-btn:hover {
-  background-color: #0b0136; /* hover:bg-gray-800 */
+  opacity: 1;
   color: #ffffff;
 }
