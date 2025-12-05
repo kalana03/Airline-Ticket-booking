@@ -22,73 +22,67 @@ app.get("/airports", async (req, res) => {
 })
 
 app.post("/bookFlight", async (req, res) => {
+  const { passenger_info, seats, flightID } = req.body;
 
-  try{
-
+  try {
     await pool.query("BEGIN");
 
-    const {passenger_info, seats, flightID} = req.body;
+    // 1️⃣ Check if passenger exists
+    const q1 = "SELECT * FROM passengers WHERE passport_id = $1";
+    const result1 = await pool.query(q1, [passenger_info.passport_id]);
 
-    const q1 = 'SELECT * FROM passengers WHERE passport_id = $1';
-    const v1 = [passenger_info.passport_id]
+    // 2️⃣ Insert passenger if not exists
+    if (result1.rows.length === 0) {
+      const q2 =
+        "INSERT INTO passengers (passport_id, first_name, last_name, email, contact_number) VALUES ($1, $2, $3, $4, $5)";
+      await pool.query(q2, [
+        passenger_info.passport_id,
+        passenger_info.first_name,
+        passenger_info.last_name,
+        passenger_info.email,
+        passenger_info.contact_number,
+      ]);
+    }
+
+    // 3️⃣ Create booking
+    const q3 =
+      "INSERT INTO bookings (flight_id, passport_id) VALUES ($1, $2) RETURNING booking_id";
+    const result3 = await pool.query(q3, [flightID, passenger_info.passport_id]);
+
+    const booking_id = result3.rows[0].booking_id;
+
+    // 4️⃣ Insert ticket for each seat
+    for (const seat of seats) {
+      const q5 =
+        "INSERT INTO tickets (booking_id, flight_id, seat_number, ticket_class, price) VALUES ($1, $2, $3, $4, $5)";
+      
+      console.log("Inserting seat:", seat); // DEBUG
+
+      await pool.query(q5, [
+        booking_id,
+        flightID,
+        seat.seatNumber,
+        seat.classType,
+        seat.price,
+      ]);
+    }
+
+    await pool.query("COMMIT");
+
+    return res.json({
+      success: true,
+      message: "Booking successful",
+      booking_id,
+    });
     
-    let result1;
-    try {
-      result1 = await pool.query(q1, v1);
-    } catch (err) {
-      console.error("DB ERROR:", err.message);
-      res.status(500).json({ error: err.message });
-    }
 
-    if (!result1 || result1.length === 0){
-      const q2 = 'INSERT INTO passengers VALUES ($1, $2, $3, $4, $5)';
-      const v2 = [passenger_info.passport_id, passenger_info.first_name, passenger_info.last_name, passenger_info.email, passenger_info.contact_number];
-
-      try{
-        const result2 = await pool.query(q2, v2);
-      }catch (err){
-        console.error("DB ERROR:", err.message);
-        res.status(500).json({ error: err.message });
-      }
-    }
-
-    const q3 = 'INSERT INTO bookings (flight_id, passport_id) VALUES ($1, $2)';
-    const v3 = [flightID, passenger_info.passport_id]
-
-    try {
-      const result3 = await pool.query(q3, v3);
-    } catch (err) {
-      console.error("DB ERROR:", err.message);
-      res.status(500).json({ error: err.message });
-    }
-
-    const q4 = "SELECT booking_id FROM bookings WHERE passport_id = $1 ORDER BY booking_id DESC LIMIT 1";
-    const v4 =[passenger_info.passport_id];
-    let result4;
-    try {
-      result4 = await pool.query(q4, v4);
-    } catch (err) {
-      console.error("DB ERROR:", err.message);
-      res.status(500).json({ error: err.message });
-    }
-
-    const booking_id = result4.rows[0].booking_id; // get the latest booking id
-      for (const seat of seats) {
-      const q5 = 'INSERT INTO tickets (booking_id, flight_id, seat_number, ticket_class, price) VALUES ($1, $2, $3, $4, $5)';
-      const v5 = [booking_id, flightID, seat.seatNumber, seat.classType, seat.price];
-      await pool.query(q5, v5);
-    }
-
-
-
-  }
-  
-  catch (err) {
+  } catch (err) {
     await pool.query("ROLLBACK");
-    console.error("ERROR:", err);
-    res.status(500).json({ error: err.message })
+    console.error("BOOKING ERROR:", err.message);
+    return res.status(500).json({ error: err.message });
   }
 });
+
 
 app.post("/searchFlights", async (req, res) => {
   const { from, to, date } = req.body;

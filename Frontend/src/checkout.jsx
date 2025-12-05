@@ -1,27 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Plane, Calendar, Clock, CreditCard, User, Info, ShieldCheck, Check, Menu } from "lucide-react";
 import { useLocation,useNavigate } from 'react-router-dom';
+import Header from './components/Header';
 
-// Inline Header to ensure preview works without external files
-const Header = () => (
-  <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="flex justify-between h-16">
-        <div className="flex items-center gap-2">
-          <div className="bg-blue-900 p-1.5 rounded-lg">
-            <Plane className="h-6 w-6 text-white" />
-          </div>
-          <span className="font-bold text-xl tracking-tight text-gray-900">AeroGlide</span>
-        </div>
-        <div className="flex items-center">
-          <button className="p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none">
-            <Menu className="h-6 w-6" />
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
-);
 
 export default function Checkout() {
   const [showSuccess, setShowSuccess] = useState(false);
@@ -104,6 +85,7 @@ export default function Checkout() {
         : parseInt(flightDetails.economy_class_price)
     };
   });
+  
 
   function HandleSubmit(e) {
     e.preventDefault();
@@ -116,8 +98,6 @@ export default function Checkout() {
 
     console.log("Submitting Booking:", payload);
 
-    // Show success modal immediately for demo/preview
-    setShowSuccess(true);
 
     // Send to backend
     fetch("http://localhost:5000/bookFlight", {
@@ -128,6 +108,8 @@ export default function Checkout() {
       .then(res => res.json())
       .then(data => {
         console.log("Booking success:", data);
+        setShowSuccess(true);
+
         // setShowSuccess(true); // Moved up for immediate feedback in preview
       })
       .catch(err => console.error("Booking error:", err));
@@ -143,6 +125,7 @@ export default function Checkout() {
         
         {/* LEFT COLUMN: Forms */}
         <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
+          <form onSubmit={HandleSubmit} className="space-y-6">
           
           {/* Passenger Details */}
           <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
@@ -160,7 +143,7 @@ export default function Checkout() {
                   type="text" 
                   placeholder="John"
                   value={passenger.first_name}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, first_name: e.target.value })}
                 />
               </div>
@@ -172,7 +155,7 @@ export default function Checkout() {
                   type="text" 
                   placeholder="Doe"
                   value={passenger.last_name}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, last_name: e.target.value })}
                 />
               </div>
@@ -184,7 +167,7 @@ export default function Checkout() {
                   type="email" 
                   placeholder="john@example.com"
                   value={passenger.email}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, email: e.target.value })}
                 />
               </div>
@@ -196,7 +179,7 @@ export default function Checkout() {
                   type="tel" 
                   placeholder="+94 77 123 4567"
                   value={passenger.contact_number}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, contact_number: e.target.value })} 
                 />
               </div>
@@ -207,7 +190,7 @@ export default function Checkout() {
                   required 
                   type="text"
                   value={passenger.passport_id}
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all"   
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all"   
                   onChange={(e) => setPassenger({ ...passenger, passport_id: e.target.value })}
                 />
                 <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
@@ -233,7 +216,7 @@ export default function Checkout() {
                     required 
                     type="text" 
                     placeholder="0000 0000 0000 0000"
-                    className="w-full pl-10 rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
+                    className="w-full pl-10 rounded-lg border-gray-300 p-2.5 border outline-none transition-all" 
                   />
                   <CreditCard className="absolute left-3 top-3 text-gray-400 w-5 h-5" />
                 </div>
@@ -246,7 +229,7 @@ export default function Checkout() {
                     required 
                     type="text" 
                     placeholder="MM/YY"
-                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
+                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all" 
                   />
                 </div>
                 <div className="space-y-1">
@@ -255,7 +238,7 @@ export default function Checkout() {
                     required 
                     type="text" 
                     placeholder="123"
-                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
+                    className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all" 
                   />
                 </div>
               </div>
@@ -266,7 +249,7 @@ export default function Checkout() {
                   required 
                   type="text" 
                   placeholder="Name on card"
-                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none focus:border-blue-900 focus:ring-1 focus:ring-blue-900 transition-all" 
+                  className="w-full rounded-lg border-gray-300 p-2.5 border outline-none transition-all" 
                 />
               </div>
 
@@ -275,14 +258,14 @@ export default function Checkout() {
                 <span>Your payment is secured</span>
               </div>
 
-              <button 
-                onClick={HandleSubmit} 
-                className="w-full bg-blue-900 text-white font-bold py-3.5 px-4 rounded-xl hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/20 transform active:scale-[0.99]"
+              <button type="submit"
+                className="min-w-full accent-btn"
               >
                 Confirm & Pay $ {sum}
               </button>
             </div>
           </div>
+          </form>
         </div>
 
         {/* RIGHT COLUMN: Summary Sidebar */}

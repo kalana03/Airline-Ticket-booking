@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS flights (
 );
 
 CREATE TABLE IF NOT EXISTS passengers (
-    passport_id SERIAL PRIMARY KEY,
+    passport_id VARCHAR(50) PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS bookings (
     booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS tickets (
+CREATE TABLE IF EXISTS tickets (
     ticket_id SERIAL PRIMARY KEY,
     booking_id INT REFERENCES bookings(booking_id),
     flight_id INT REFERENCES flights(flight_id),
@@ -52,17 +52,6 @@ CREATE TABLE IF NOT EXISTS payments (
     payment_method VARCHAR(50) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS tickets (
-    ticket_id SERIAL PRIMARY KEY,
-    booking_id INT REFERENCES bookings(booking_id),
-    flight_id INT REFERENCES flights(flight_id),
-    ticket_class VARCHAR(20) NOT NULL,
-    seat_numbers VARCHAR(10) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-
 CREATE TABLE IF NOT EXISTS routes (
     route_id SERIAL PRIMARY KEY,
     route_type VARCHAR(20) NOT NULL,
@@ -70,7 +59,6 @@ CREATE TABLE IF NOT EXISTS routes (
     destination VARCHAR(10) NOT NULL,
     distance_km INT NOT NULL
 );
-
 
 CREATE TABLE IF NOT EXISTS airports (
     airport_code VARCHAR(10) PRIMARY KEY,
